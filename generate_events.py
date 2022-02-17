@@ -5,25 +5,9 @@ from collections import defaultdict
 
 def update_event_exp(
     mda: MDASequence,
-    defaultExposures: Dict[str, float],
     expByPosition: Dict[str, List[float]],
 ):
-    channels = list(defaultExposures.keys())
-
-    exp_dict = defaultdict(lambda: defaultExposures)
-    stage_positions = [(100, 100, 30), (200, 150, 35), (250, 150, 35)]
-    FITC_by_pos = [0.1, 5, 10]
-
-    for p in range(len(stage_positions)):
-        for c, exps in expByPosition.items():
-            exp_dict[p][c] = exps[p]
-
-    mda = MDASequence(
-        stage_positions=stage_positions,
-        channels=channels,
-        time_plan={"interval": 1, "loops": 5},
-        axis_order="tpcz",
-    )
+    n_pos = mda.shape[mda.axis_order.index('p')]
     events = []
     for e in mda.iter_events():
         # e.exposure = 400
@@ -41,7 +25,7 @@ def update_event_exp(
     # for e in events:
     #     pass
         # print(e)
-    return events, mda
+    return events
 
 
 class fakeSequence:
